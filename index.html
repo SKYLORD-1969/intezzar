@@ -1,0 +1,552 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-site-verification" content="vVMUvP-PxVVEHN-4b3XNr-JTb173hMuGh5Kc4DcTueA" />
+    <title>Intezaar Qabool Hai</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Reset & Base Styles */
+        :root {
+            --royal-blue-light: #4A90E2;
+            --royal-blue-mid: #2C6FB5;
+            --royal-blue-dark: #1A4F8A;
+            --glow-accent: #AECBFA;
+            --glow-subtle: #7394C3;
+            --white: #ffffff;
+            --font-playfair: 'Playfair Display', serif;
+            --font-caveat: 'Caveat', cursive;
+            --font-dancing: 'Dancing Script', cursive;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--royal-blue-dark);
+            color: var(--white);
+            font-family: sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+
+        body::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, and Opera */
+        }
+        
+        .text-shadow-glow {
+            text-shadow: 0 0 8px rgba(174, 203, 250, 0.8), 0 0 12px rgba(174, 203, 250, 0.6), 0 0 20px rgba(174, 203, 250, 0.6);
+        }
+        
+        /* Keyframes */
+        @keyframes background-pan {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(174, 203, 250, 0.5), 0 0 30px rgba(115, 148, 195, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(174, 203, 250, 0.8), 0 0 45px rgba(115, 148, 195, 0.5);
+            }
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes arrow-bounce {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(10px);
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes char-reveal {
+           from {
+                opacity: 0;
+                transform: translateY(20px);
+           }
+           to {
+                opacity: 1;
+                transform: translateY(0);
+           }
+        }
+
+        /* Utility Classes */
+        .hidden-on-load {
+            opacity: 0;
+        }
+        .is-visible {
+            animation: fade-in-up 1s ease-out forwards;
+        }
+
+        /* Main structure */
+        .background-container {
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(to top right, var(--royal-blue-light), var(--royal-blue-mid), var(--royal-blue-dark));
+            background-size: 200% 200%;
+            animation: background-pan 35s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .main-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .content-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6rem; /* space-y-24 */
+            padding: 6rem 1rem; /* py-24 px-4 */
+        }
+        @media (min-width: 768px) {
+            .content-wrapper {
+                gap: 9rem; /* md:space-y-36 */
+            }
+        }
+
+        /* Audio Toggle */
+        .audio-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 50;
+            width: 3rem;
+            height: 3rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            transition: background-color 300ms ease, transform 150ms ease;
+        }
+        .audio-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        .audio-toggle:active {
+            transform: scale(0.95);
+        }
+        .audio-toggle svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+        .audio-toggle .pause-icon {
+            display: none;
+        }
+        .audio-toggle.playing .play-icon {
+            display: none;
+        }
+        .audio-toggle.playing .pause-icon {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        .hero h1 {
+            font-family: var(--font-playfair);
+            font-size: 2.8rem; /* text-5xl */
+            transform: translateY(-50px);
+            opacity: 0;
+            animation: fade-in-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+        }
+        .hero p {
+            font-family: var(--font-caveat);
+            font-size: 1.25rem; /* text-xl */
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 1.5rem;
+            transform: translateY(50px);
+            opacity: 0;
+            animation: fade-in-up 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+        }
+        .hero .scroll-arrow {
+            position: absolute;
+            bottom: 2.5rem;
+            opacity: 0;
+            animation: arrow-bounce 2s ease-in-out 2.5s infinite;
+        }
+        .hero .scroll-arrow svg {
+            width: 2rem;
+            height: 2rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Countdown Section */
+        .countdown {
+            width: 100%;
+            max-width: 56rem; /* max-w-4xl */
+            margin: 0 auto;
+            text-align: center;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px -1px var(--glow-accent/20), 0 2px 4px -2px var(--glow-accent/20);
+            backdrop-filter: blur(4px);
+        }
+        .countdown h2 {
+            font-family: var(--font-dancing);
+            font-size: 1.875rem; /* text-3xl */
+            margin-bottom: 2rem;
+        }
+        .countdown .timer-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+        .countdown .time-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .countdown .time-block .number {
+            display: inline-block;
+            font-family: var(--font-playfair);
+            font-size: 2.25rem; /* text-4xl */
+            min-width: 4rem;
+        }
+        .countdown .time-block .label {
+            font-family: var(--font-caveat);
+            font-size: 1.125rem; /* text-lg */
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 0.25rem;
+        }
+        .countdown .separator {
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Shayari Carousel */
+        .shayari-carousel {
+            width: 100%;
+            height: 16rem; /* h-64 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 1rem;
+        }
+        .shayari-carousel p {
+            font-family: var(--font-dancing);
+            font-size: 1.5rem; /* text-2xl */
+            font-style: italic;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .shayari-carousel .char {
+            display: inline-block;
+            white-space: pre;
+            opacity: 0;
+            animation: char-reveal 0.5s ease-out forwards;
+        }
+
+        /* Pledge Section */
+        .pledge {
+            width: 100%;
+            max-width: 48rem; /* max-w-3xl */
+            margin: 0 auto;
+            text-align: center;
+            padding: 4rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+        .pledge h3, .pledge .pledge-line {
+            font-family: var(--font-playfair);
+            font-size: 1.5rem; /* text-2xl */
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .pledge .pledge-line {
+            margin-top: 0.5rem;
+        }
+        .pledge .pledge-box {
+            padding: 2rem;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            position: relative;
+            animation: pulse-glow 5s ease-in-out infinite;
+        }
+        .pledge .pledge-box p {
+            position: relative;
+            z-index: 10;
+        }
+        .pledge .pledge-box .quote {
+            font-family: var(--font-dancing);
+            font-size: 1.875rem; /* text-3xl */
+        }
+        .pledge .pledge-box .signature {
+            font-family: var(--font-caveat);
+            font-size: 1.25rem; /* text-xl */
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 2rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            font-family: var(--font-caveat);
+            font-size: 1.25rem; /* text-xl */
+            padding: 3rem 0;
+        }
+
+        /* Responsive Styles */
+        @media (min-width: 768px) {
+            .hero h1 { font-size: 5rem; } /* md:text-8xl */
+            .hero p { font-size: 1.875rem; } /* md:text-3xl */
+            .countdown h2 { font-size: 2.25rem; } /* md:text-4xl */
+            .countdown .timer-grid { gap: 2rem; }
+            .countdown .time-block .number { font-size: 3.75rem; } /* md:text-6xl */
+            .countdown .time-block .label { font-size: 1.25rem; } /* md:text-xl */
+            .shayari-carousel { height: 12rem; } /* md:h-48 */
+            .shayari-carousel p { font-size: 2.25rem; } /* md:text-4xl */
+            .pledge h3, .pledge .pledge-line { font-size: 1.875rem; } /* md:text-3xl */
+            .pledge .pledge-box .quote { font-size: 3rem; } /* md:text-5xl */
+            .pledge .pledge-box .signature { font-size: 1.5rem; } /* md:text-2xl */
+        }
+    </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div class="background-container"></div>
+    
+    <button id="audio-toggle" class="audio-toggle" aria-label="Play audio">
+        <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+        <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
+    </button>
+    
+    <main class="main-content">
+        <section class="hero">
+            <div>
+                <h1 class="text-shadow-glow">Intezaar Qabool Hai...</h1>
+                <p>Ek wada, 5 saal ka. Mohabbat se, rooh se.</p>
+            </div>
+            <div class="scroll-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+            </div>
+        </section>
+
+        <div class="content-wrapper">
+            <section id="countdown" class="countdown hidden-on-load">
+                <h2>Tere lautne tak...</h2>
+                <div class="timer-grid">
+                    <div class="time-block">
+                        <span id="years" class="number text-shadow-glow">00</span>
+                        <span class="label">Saal</span>
+                    </div>
+                    <span class="separator">:</span>
+                    <div class="time-block">
+                        <span id="days" class="number text-shadow-glow">00</span>
+                        <span class="label">Din</span>
+                    </div>
+                    <span class="separator">:</span>
+                    <div class="time-block">
+                        <span id="hours" class="number text-shadow-glow">00</span>
+                        <span class="label">Ghante</span>
+                    </div>
+                    <span class="separator">:</span>
+                    <div class="time-block">
+                        <span id="minutes" class="number text-shadow-glow">00</span>
+                        <span class="label">Lamhe</span>
+                    </div>
+                    <span class="separator">:</span>
+                    <div class="time-block">
+                        <span id="seconds" class="number text-shadow-glow">00</span>
+                        <span class="label">Saansein</span>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="shayari" class="shayari-carousel hidden-on-load">
+                <p id="shayari-text" class="text-shadow-glow"></p>
+            </section>
+            
+            <section id="pledge" class="pledge hidden-on-load">
+                <div class="pledge-intro">
+                    <h3>Agar tu laut ke aaye...</h3>
+                    <p class="pledge-line">...toh main wahi milunga, waisa hi milunga.</p>
+                </div>
+                <div class="pledge-box">
+                    <p class="quote text-shadow-glow">“Na koi aur hoga, na kabhi tha.<br/>Bas tu hi thi, tu hi hai, tu hi rahegi.”</p>
+                    <p class="signature">— Uska intezaar jo har saans mein tujhe jeeta hai.</p>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <p>Made with love ♡</p>
+        </footer>
+    </main>
+    
+    <audio id="background-audio" loop src="https://cdn.pixabay.com/audio/2022/11/22/audio_2c22b62145.mp3" preload="auto"></audio>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Tujhe yaad karne ka waqt nahi guzarta...");
+
+            // --- Scroll Animations ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3, once: true });
+
+            document.querySelectorAll('.hidden-on-load').forEach(el => {
+                observer.observe(el);
+            });
+
+            // --- Audio Toggle ---
+            const audioToggle = document.getElementById('audio-toggle');
+            const audio = document.getElementById('background-audio');
+            
+            audioToggle.addEventListener('click', () => {
+                if (audio.paused) {
+                    audio.play().catch(e => console.info("Audio playback failed:", e));
+                    audioToggle.classList.add('playing');
+                    audioToggle.setAttribute('aria-label', 'Pause audio');
+                } else {
+                    audio.pause();
+                    audioToggle.classList.remove('playing');
+                    audioToggle.setAttribute('aria-label', 'Play audio');
+                }
+            });
+
+            // --- Countdown Timer ---
+            const targetDate = new Date();
+            targetDate.setFullYear(targetDate.getFullYear() + 5);
+
+            const yearsEl = document.getElementById('years');
+            const daysEl = document.getElementById('days');
+            const hoursEl = document.getElementById('hours');
+            const minutesEl = document.getElementById('minutes');
+            const secondsEl = document.getElementById('seconds');
+
+            function updateCountdown() {
+                const now = new Date();
+                const difference = +targetDate - +now;
+
+                if (difference > 0) {
+                    const totalSeconds = Math.floor(difference / 1000);
+                    const totalMinutes = Math.floor(totalSeconds / 60);
+                    const totalHours = Math.floor(totalMinutes / 60);
+                    const totalDays = Math.floor(totalHours / 24);
+                    
+                    const years = Math.floor(totalDays / 365);
+                    const days = totalDays % 365;
+                    const hours = totalHours % 24;
+                    const minutes = totalMinutes % 60;
+                    const seconds = totalSeconds % 60;
+
+                    yearsEl.textContent = String(years).padStart(2, '0');
+                    daysEl.textContent = String(days).padStart(2, '0');
+                    hoursEl.textContent = String(hours).padStart(2, '0');
+                    minutesEl.textContent = String(minutes).padStart(2, '0');
+                    secondsEl.textContent = String(seconds).padStart(2, '0');
+                } else {
+                    // Handle countdown finished
+                    [yearsEl, daysEl, hoursEl, minutesEl, secondsEl].forEach(el => el.textContent = '00');
+                    clearInterval(countdownInterval);
+                }
+            }
+            
+            const countdownInterval = setInterval(updateCountdown, 1000);
+            updateCountdown(); // Initial call
+
+            // --- Shayari Carousel ---
+            const shayariLines = [
+                "Waqt badalta raha... par ek chehra tha jo aankhon mein ruk gaya.",
+                "Kabhi tu yaad aaye, toh lagta hai jaise waqt tham sa gaya ho.",
+                "Main nahi badla, bas din badal gaye... khayalon mein naam ab bhi tera hi hai.",
+                "Saans chalti hai, par zindagi tere intezaar mein thehri hai.",
+                "Har dua mein manga hai tujhe, har khwab mein paaya hai tujhe.",
+                "Fasle jismon ke hain, roohein toh aaj bhi ek hain.",
+                "Teri khamoshi bhi ek kahani hai, jo sirf meri rooh sunti hai.",
+                "Paanch saal kya, paanch sadiyan bhi kam hain tere intezaar ke liye."
+            ];
+            let shayariIndex = 0;
+            const shayariEl = document.getElementById('shayari-text');
+
+            function typeShayari() {
+                shayariEl.innerHTML = '';
+                const line = `“${shayariLines[shayariIndex]}”`;
+                const characters = Array.from(line);
+                
+                characters.forEach((char, index) => {
+                    const span = document.createElement('span');
+                    span.className = 'char';
+                    span.textContent = char;
+                    span.style.animationDelay = `${index * 0.04}s`;
+                    shayariEl.appendChild(span);
+                });
+
+                shayariIndex = (shayariIndex + 1) % shayariLines.length;
+            }
+
+            setInterval(typeShayari, 8000);
+            typeShayari(); // Initial call
+        });
+    </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
